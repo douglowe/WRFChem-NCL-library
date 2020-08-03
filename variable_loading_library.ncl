@@ -7,7 +7,7 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/wrf/WRFUserARW.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/contrib/time_axis_labels.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/wrf/WRF_contributed.ncl"
 
-load "/Volumes/Odin/YRD_China/data_plotting/scripts/library/WRFCHEM_misc_stats.ncl"
+load "$WRF_NCL_ROOT/library/WRFCHEM_misc_stats.ncl"
 
 begin
 
