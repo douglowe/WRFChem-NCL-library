@@ -31,6 +31,11 @@ m_cl  = 35.5
 m_nh4 = 18.0
 m_na  = 23.0
 
+;;; BTEX species molecular weights
+m_benzene = 78.1118
+m_toluene = 92.1384
+m_oxyl = 106.1650
+
 
 m_vbs = 250.0   ; use a single molar mass for VBS compounds - change this if WRF-Chem changes!!!
 
@@ -159,6 +164,12 @@ begin
 	  if(isStrSubset(species,"_f_c") .or. isStrSubset(species,"_f_o") \
 	  		.or. isStrSubset(species,"_b_c") .or. isStrSubset(species,"_b_o")) ; VBS compounds
 		   conv_fac = m_dry/m_vbs
+	  elseif(isStrSubset(species,"oxyl"))
+	  	   conv_fac = m_dry/m_oxyl
+	  elseif(isStrSubset(species,"benzene"))
+	  	   conv_fac = m_dry/m_benzene
+	  elseif(isStrSubset(species,"toluene"))
+	  	   conv_fac = m_dry/m_toluene
 	  elseif(isStrSubset(species,"no3"))
 		   conv_fac = m_dry/m_no3
 	  elseif(isStrSubset(species,"so4"))
@@ -1904,6 +1915,20 @@ begin
 			copy_VarMeta (no, var_temp) 
 			var_temp@description = "Mixing ratio of NOx"
 		end if
+
+	; calculate the BTEX summed species ( benzene, toluene, and o-xylene mass )
+	elseif(var .eq. "BTEX")
+	
+		benzene = wrf_user_getvar(FILES,"benzene",-1)
+		toluene = wrf_user_getvar(FILES,"toluene",-1)
+		oxyl = wrf_user_getvar(FILES,"oxyl",-1)
+		
+		benzene := ppm_ugkg_conv("benzene",benzene)
+		toluene := ppm_ugkg_conv("toluene",toluene)
+		oxyl    := ppm_ugkg_conv("oxyl",oxyl)
+		
+		var_temp = (/ benzene + toluene + oxyl /)
+		var_temp@description = "BTEX lumped species in ug/m3"
 
 
 	; If we want the Aerosol Optical Thickness at 550nm wavelength, then follow this process
